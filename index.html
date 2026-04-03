@@ -1,30 +1,297 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 Garmin Golf 高爾夫球社課表</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid black; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .holiday { background-color: #ff9999; color: black; }
-        .next-lesson { font-weight: bold; }
-        .notes { font-size: 14px; margin: 10px 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: #f0f4f8;
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, #0f4c2a 0%, #1a7a45 100%);
+            border-radius: 16px;
+            padding: 36px 40px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(15, 76, 42, 0.25);
+        }
+
+        .page-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .page-header .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        /* Info card */
+        .notes-card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px 32px;
+            margin-bottom: 28px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            border: 1px solid #e2e8f0;
+        }
+
+        .notes-card h3 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .notes-card ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 40px;
+        }
+
+        .notes-card > ul > li {
+            font-size: 0.9rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .notes-card > ul > li > ul {
+            margin-top: 6px;
+            padding-left: 12px;
+            border-left: 2px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .notes-card a {
+            color: #1a7a45;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .notes-card a:hover { text-decoration: underline; }
+
+        /* Table wrapper */
+        .table-wrapper {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: #f8fafc;
+            color: #475569;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            padding: 14px 18px;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+
+        tbody tr:hover:not(.holiday) { background: #f8fafc; }
+
+        td {
+            padding: 14px 18px;
+            font-size: 0.875rem;
+            color: #334155;
+            vertical-align: top;
+            line-height: 1.55;
+        }
+
+        /* Session number */
+        td:first-child {
+            font-weight: 700;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            width: 52px;
+            text-align: center;
+        }
+
+        /* Date column */
+        td:nth-child(2) {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            color: #1e293b;
+            white-space: nowrap;
+            width: 110px;
+        }
+
+        /* Instructor column */
+        td:nth-child(4) {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* Notes column */
+        td:last-child {
+            font-size: 0.8rem;
+        }
+
+        /* Badges in notes */
+        td:last-child:not(:empty) {
+            font-weight: 600;
+            color: #1a7a45;
+        }
+
+        /* Advanced tag */
+        .advanced-tag {
+            display: inline-block;
+            background: #eff6ff;
+            color: #3b82f6;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        /* Holiday / suspended rows */
+        .holiday {
+            background: #fff5f5 !important;
+        }
+
+        .holiday:hover { background: #fff5f5 !important; }
+
+        .holiday td {
+            color: #cbd5e1;
+        }
+
+        .holiday td:first-child {
+            color: #cbd5e1;
+        }
+
+        .holiday td:nth-child(2) {
+            color: #f87171;
+            font-weight: 700;
+        }
+
+        .holiday td:nth-child(3) {
+            color: #f87171;
+            font-weight: 600;
+            font-size: 0.82rem;
+        }
+
+        .suspend-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fee2e2;
+            color: #dc2626;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        .suspend-badge::before {
+            content: '✕';
+            font-size: 0.65rem;
+        }
+
+        /* Next lesson highlight */
+        .next-lesson td {
+            background: #f0fdf4;
+        }
+
+        .next-lesson td:nth-child(2) {
+            color: #16a34a;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            gap: 20px;
+            padding: 16px 18px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.78rem;
+            color: #64748b;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 20px 12px; }
+            .page-header { padding: 24px 20px; }
+            .page-header h2 { font-size: 1.2rem; }
+            .notes-card { padding: 20px; }
+            td, thead th { padding: 10px 12px; }
+        }
     </style>
 </head>
 <body>
-    <h2>2026 Garmin Golf 高爾夫球社課表（2026年3月19日 - 2026年12月31日）</h2>
-    <div class="notes">
+<div class="page-wrapper">
+    <div class="page-header">
+        <h2>2026 Garmin Golf 高爾夫球社課表</h2>
+        <div class="subtitle">2026年3月19日 - 2026年12月31日 &nbsp;｜&nbsp; Dream Golf 林口學院 &nbsp;｜&nbsp; 每週四 19:00 - 21:00</div>
+    </div>
+
+    <div class="notes-card">
+        <h3>注意事項 &amp; 聯繫窗口</h3>
         <ul>
-            <li>Dream Golf 林口學院資訊：
+            <li>
+                Dream Golf 林口學院
                 <ul>
-                    <li>地址：<a href="https://maps.app.goo.gl/FvMvWsGxk6dRpmx1A" target="_blank">https://maps.app.goo.gl/FvMvWsGxk6dRpmx1A</a></li>
-                    <li>官網：<a href="https://www.dreamgolf.com.tw/" target="_blank">https://www.dreamgolf.com.tw/</a></li>
-                    <li>IG：<a href="https://www.instagram.com/dreamgolfacademy/" target="_blank">https://www.instagram.com/dreamgolfacademy/</a></li>
+                    <li>地址：<a href="https://maps.app.goo.gl/FvMvWsGxk6dRpmx1A" target="_blank">Google Maps</a></li>
+                    <li>官網：<a href="https://www.dreamgolf.com.tw/" target="_blank">dreamgolf.com.tw</a></li>
+                    <li>IG：<a href="https://www.instagram.com/dreamgolfacademy/" target="_blank">@dreamgolfacademy</a></li>
                 </ul>
             </li>
-            <li>社課時間：19:00 - 21:00</li>
             <li>遇到颱風放假會延期，以人事行政總處公布為主</li>
-            <li>聯繫窗口
+            <li>
+                聯繫窗口
                 <ul>
                     <li>30048 Thomas Shen</li>
                     <li>28514 Jessie Hsieh 謝沁妤</li>
@@ -32,7 +299,11 @@
             </li>
         </ul>
     </div>
+
+    <div class="table-wrapper">
+    </div>
     <table>
+        <thead>
         <tr>
             <th>堂次</th>
             <th>日期</th>
@@ -40,20 +311,22 @@
             <th>指導教練</th>
             <th>備註</th>
         </tr>
+        </thead>
+        <tbody>
         <tr><td>1</td><td>2026/03/19</td><td>高爾夫運動介紹, Dream Golf 學院介紹, 球桿種類介紹, 握桿方式, 站姿設定, 拍球</td><td>Jimmy Chang - Dream Golf Academy 院長 / 高爾夫國家隊總教練</td><td></td></tr>
         <tr><td>2</td><td>2026/03/26</td><td>握桿方式, 站姿設定, 拍球</td><td>余楷翔 - Dream Golf 專業教練</td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/04/02</td><td>清明連假</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/04/02</td><td><span class="suspend-badge">清明連假</span></td><td></td><td></td></tr>
         <tr><td>3</td><td>2026/04/09</td><td>揮桿動作建立：上桿轉肩, 揮桿平面, 上桿頂點位置確認</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>4</td><td>2026/04/16</td><td>揮桿動作建立：下桿啟動, 重心轉移, 正確收桿</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>5</td><td>2026/04/23</td><td>全揮桿綜合練習：1/4 → 1/2 → 全揮桿漸進式建立</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/04/30</td><td>勞動節連假 (暫停)</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/04/30</td><td><span class="suspend-badge">勞動節連假 暫停</span></td><td></td><td></td></tr>
         <tr><td>6</td><td>2026/05/07</td><td>推桿基礎：握桿, 站姿設定, 桿面控制, 打擊節奏</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>7</td><td>2026/05/14</td><td>推桿進階：讀果嶺坡度與方向, 距離感訓練</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>8</td><td>2026/05/21</td><td>切桿基礎 (Chipping)：低彈道短切技巧, 落點選擇策略</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>9</td><td>2026/05/28</td><td>切桿進階 (Pitching)：高彈道落點控制, 轉速與滾動比例</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>10</td><td>2026/06/04</td><td>短鐵桿 (Wedge) 精準度：全方位距離控制練習</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>11</td><td>2026/06/11</td><td>中長鐵桿一致性：揮桿節奏, 穩定性與精準度提升</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/06/18</td><td>端午連假 (暫停)</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/06/18</td><td><span class="suspend-badge">端午連假 暫停</span></td><td></td><td></td></tr>
         <tr><td>12</td><td>2026/06/25</td><td>球道木桿 &amp; 混合桿 (Fairway Wood &amp; Hybrid)：站位與揮桿要點</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>13</td><td>2026/07/02</td><td>開球木桿 (Driver)：站姿設定, 開球技巧, 彈道調整</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>14</td><td>2026/07/09</td><td>高爾夫體適能 &amp; TPI 身體評估：核心力量, 柔軟度, 揮桿效率</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
@@ -61,17 +334,17 @@
         <tr><td>16</td><td>2026/07/23</td><td>球場策略：選桿邏輯, 安全落球區設定, 避免大數心法</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>17</td><td>2026/07/30</td><td>各種地形打法：上下坡站位, 草深救球, 沙坑基礎</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>18</td><td>2026/08/06</td><td>預擊流程 (Pre-shot Routine)：目標確認, 身體對齊, 上場節奏建立</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr><td>19</td><td>2026/08/13</td><td>進階彈道控制：Draw vs. Fade 曲球操控, 高低彈道調整 [進階]</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr><td>20</td><td>2026/08/20</td><td>Club Path &amp; Face Angle 深度解析, 彈道法則應用 [進階]</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
+        <tr><td>19</td><td>2026/08/13</td><td>進階彈道控制：Draw vs. Fade 曲球操控, 高低彈道調整 <span class="advanced-tag">進階</span></td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
+        <tr><td>20</td><td>2026/08/20</td><td>Club Path &amp; Face Angle 深度解析, 彈道法則應用 <span class="advanced-tag">進階</span></td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>21</td><td>2026/08/27</td><td>100碼內全方位練習：各距離分段精準落點訓練</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>22</td><td>2026/09/03</td><td>沙坑救球技巧：爆沙技法, 長沙坑打法, 沙坑場上策略</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr><td>23</td><td>2026/09/10</td><td>心理建設與競賽心態：面對失誤, 維持專注, 賽場節奏 [進階]</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
+        <tr><td>23</td><td>2026/09/10</td><td>心理建設與競賽心態：面對失誤, 維持專注, 賽場節奏 <span class="advanced-tag">進階</span></td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>24</td><td>2026/09/17</td><td>模擬比賽練習 &amp; 個人弱點分析與修正建議</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/09/24</td><td>中秋連假 (暫停)</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/09/24</td><td><span class="suspend-badge">中秋連假 暫停</span></td><td></td><td></td></tr>
         <tr><td>25</td><td>2026/10/01</td><td>模擬比賽計分練習：Stroke Play vs. Match Play 計分方式, 差點應用實作</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/10/08</td><td>國慶連假 (暫停)</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/10/08</td><td><span class="suspend-badge">國慶連假 暫停</span></td><td></td><td></td></tr>
         <tr><td>26</td><td>2026/10/15</td><td>實戰後動作檢討：個人弱點補強, 定制練習計畫</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
-        <tr><td>27</td><td>2026/10/22</td><td>推桿線解讀技巧 &amp; 攻旗桿策略 [進階]</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
+        <tr><td>27</td><td>2026/10/22</td><td>推桿線解讀技巧 &amp; 攻旗桿策略 <span class="advanced-tag">進階</span></td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>28</td><td>2026/10/29</td><td>差點計算方式 &amp; 比賽規則進階, Golf Day 準備</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>29</td><td>2026/11/05</td><td>總複習：全揮桿動作要點確認與個別修正</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td></td></tr>
         <tr><td>30</td><td>2026/11/12</td><td>總複習：短打 &amp; 推桿全面複習</td><td>高藤 - TPGA 職業選手 / Dream Golf 專業教練</td><td>Golf Day (Golf Weekend)</td></tr>
@@ -80,14 +353,21 @@
         <tr><td>33</td><td>2026/12/03</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>34</td><td>2026/12/10</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>35</td><td>2026/12/17</td><td>自由練習</td><td></td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/12/24</td><td>行憲紀念日 (暫停)</td><td></td><td></td></tr>
-        <tr class="holiday"><td>-</td><td>2026/12/31</td><td>元旦 (暫停)</td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/12/24</td><td><span class="suspend-badge">行憲紀念日 暫停</span></td><td></td><td></td></tr>
+        <tr class="holiday"><td>-</td><td>2026/12/31</td><td><span class="suspend-badge">元旦 暫停</span></td><td></td><td></td></tr>
         <tr><td>36</td><td>2027/01/07</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>37</td><td>2027/01/14</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>38</td><td>2027/01/21</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>39</td><td>2027/01/28</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>40</td><td>2027/02/04</td><td>自由練習</td><td></td><td></td></tr>
         <tr><td>-</td><td>2027/02/11</td><td>Buffer</td><td></td><td></td></tr>
+        </tbody>
     </table>
+    <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div> 暫停 / 假日</div>
+        <div class="legend-item"><span class="advanced-tag" style="margin:0">進階</span> 進階課程</div>
+    </div>
+    </div>
+</div>
 </body>
 </html>
