@@ -218,6 +218,64 @@
 
         .highlight dd { max-width: 720px; }
 
+        .schedule-detail {
+            grid-column: 1 / -1;
+            border-top: 1px solid var(--line);
+            padding-top: 22px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .schedule-table th,
+        .schedule-table td {
+            border-bottom: 1px solid var(--line);
+            padding: 10px 12px 10px 0;
+            font-size: .9rem;
+            line-height: 1.6;
+        }
+
+        .schedule-table th {
+            color: var(--green);
+            font-size: .72rem;
+            font-weight: 800;
+            letter-spacing: .06em;
+        }
+
+        .schedule-table td:first-child {
+            min-width: 120px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .schedule-table td[colspan="3"] { text-align: center; }
+
+        .group-list {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .group-list h3 {
+            margin: 0 0 8px;
+            color: var(--green);
+            font-size: .9rem;
+        }
+
+        .group-list p {
+            margin: 0;
+            font-size: .88rem;
+            line-height: 1.9;
+        }
+
+        @media (max-width: 640px) {
+            .group-list { grid-template-columns: 1fr; gap: 18px; }
+        }
+
         .day-two {
             position: relative;
             width: 100%;
@@ -306,6 +364,67 @@
                 <div class="detail highlight">
                     <dt>活動亮點 HIGHLIGHTS</dt>
                     <dd>專業教練指導 × Garmin Golf 生態系設備體驗 (Approach G82 / R50) × 享用美味下午茶</dd>
+                </div>
+                <div class="detail schedule-detail">
+                    <dt>分組輪流體驗與活動流程</dt>
+                    <dd>
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">時間</th>
+                                    <th scope="col">A組</th>
+                                    <th scope="col">B組</th>
+                                    <th scope="col">C組</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>14:30 – 15:00</td>
+                                    <td colspan="3">報到／暖身／點心下午茶</td>
+                                </tr>
+                                <tr>
+                                    <td>15:00 – 15:35</td>
+                                    <td>推桿</td>
+                                    <td>推桿</td>
+                                    <td>揮桿</td>
+                                </tr>
+                                <tr>
+                                    <td>15:35 – 16:10</td>
+                                    <td>揮桿</td>
+                                    <td>推桿</td>
+                                    <td>推桿</td>
+                                </tr>
+                                <tr>
+                                    <td>16:10 – 16:20</td>
+                                    <td colspan="3">休息</td>
+                                </tr>
+                                <tr>
+                                    <td>16:20 – 16:55</td>
+                                    <td>推桿</td>
+                                    <td>揮桿</td>
+                                    <td>推桿</td>
+                                </tr>
+                                <tr>
+                                    <td>16:55 起</td>
+                                    <td colspan="3">頒獎、合照、解散</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="group-list" aria-label="分組名單">
+                            <section>
+                                <h3>A組</h3>
+                                <p>魏O廷、林O楷、陳O中、林O儒、黃O萱、蘇O蝶、廖O聖、林O丞、何O霖、黃O庭、林O羽、許O倫、劉O貞</p>
+                            </section>
+                            <section>
+                                <h3>B組</h3>
+                                <p>李O慶、金O哲、童O葦、鄭O妤、阮O慧、陳O玲、林O偉、林O燁、黃O釗、張O瑋、曾O君、楊O翔、簡O信、廖O翔</p>
+                            </section>
+                            <section>
+                                <h3>C組</h3>
+                                <p>張O斌、卓O伶、方O彥、鄧O翔、黃O瑜、朱O宣、徐O禾、蘇O雯、高O懷、林O驊、李O晴、張O、呂O致、簡O翔</p>
+                            </section>
+                        </div>
+                    </dd>
                 </div>
             </dl>
         </div>
